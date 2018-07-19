@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.jezh</groupId>
+  <artifactId>spring-mvc-jpa-hibernet-mysql-postgresql-h2-junit</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>spring-mvc-jpa-hibernet-mysql-postgresql-h2-junit Maven Webapp</name>
+  <!-- FIXME change it to the project's website -->
+  <!--<url>http://www.example.com</url>-->
+
+  <properties>
+      <!--the following ones have special names appropriate for maven, no need in any additional configuration:-->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+      <!--________________________________________________________________________________________ Spring-framework-->
+      <spring.version>5.0.4.RELEASE</spring.version>
+      <springsecurity.version>5.0.3.RELEASE</springsecurity.version>
+      <!--____________________________________________________________________________________________________ JDBC-->
+      <!--<mysql.connector.version>5.1.45</mysql.connector.version>-->
+      <mysql.connector.version>5.1.31</mysql.connector.version>
+      <org.postgresql.version>42.1.1</org.postgresql.version>
+      <h2.version>1.4.196</h2.version>
+      <!--____________________________________________________________________________________________________ ORM-->
+      <!--<hibernate.version>5.2.12.Final</hibernate.version>-->
+      <hibernate.version>4.3.10.Final</hibernate.version>
+      <!--_______________________________________________________________________________________________ validation-->
+      <javax.validation.version>2.0.0.Final</javax.validation.version>
+      <hibernate.validator.version>5.3.4.Final</hibernate.validator.version>
+      <!--_________________________________________________________________________________________ Servlet+JSP+JSTL-->
+      <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+      <javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>
+      <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
+
+
+      <!--<java.version>1.8</java.version>-->
+    <log4j.version>2.8.2</log4j.version>
+      <jansi.version>1.17</jansi.version>
+      <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+      <!--<javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>-->
+      <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
+      <!--<javax.version>7.0</javax.version>-->
+
+      <c3p0.version>0.9.5.2</c3p0.version>
+      <dbcp.version>1.4</dbcp.version>
+      <proxool.version>0.9.1</proxool.version>
+      <!--<javax.validation.version>2.0.0.Final</javax.validation.version>-->
+      <!--<hibernate.validator.version>5.4.2.Final</hibernate.validator.version>-->
+      <!--<hibernate.validator.version>6.0.7.Final</hibernate.validator.version>-->
+      <!--NB: version 6.0.7 requires el-api jar in version 3.0 (it is contained in Tomcat 8, but in Tomcat 7 there is
+      only version 2). And I have "NoClassDefFoundError: javax/el/ELManager". The 5.3.4.Final resolves this issue-->
+      <!--<commons-logging.version>1.2</commons-logging.version>-->
+      <aspectjweaver.version>1.8.13</aspectjweaver.version>
+
+      <!--<spring.version>4.3.9.RELEASE</spring.version>-->
+      <!--<springsecurity.version>4.2.3.RELEASE</springsecurity.version>-->
+      <!--see maven central repo to find out the compatible version of the springframework and springsecurity.
+      E.g.: spring.version 4.3.9.RELEASE and springsecurity.version 4.2.3.RELEASE
+      or spring.version 5.0.2.RELEASE and springsecurity.version 5.0.0.RELEASE-->
+      <jackson.version>2.2.1</jackson.version>
+      <junit.version>4.12</junit.version>
+      <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+      <maven-war-plugin.version>3.2.0</maven-war-plugin.version>
+      <tomcat7.maven.plugin.version>2.2</tomcat7.maven.plugin.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+      <!--________________________________________________________________________________________ Spring-framework-->
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-webmvc</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-tx</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-orm</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-test</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <!--____________________________________________________________________________________________________ JDBC-->
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql.connector.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+      <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <version>${org.postgresql.version}</version>
+          <!--<scope>runtime</scope>-->
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+      <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>${h2.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <!--____________________________________________________________________________________________________ ORM-->
+      <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <version>${hibernate.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <version>${hibernate.version}</version>
+      </dependency>
+
+      <!--_______________________________________________________________________________________________ validation-->
+      <dependency>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
+          <version>${javax.validation.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-validator</artifactId>
+          <version>${hibernate.validator.version}</version>
+      </dependency>
+
+      <!--_________________________________________________________________________________________ Servlet+JSP+JSTL-->
+      <!--javax - это набор интерфейсов, конкретную имплементацию нужно подключать извне. Поэтому
+      следующие две библиотеки нужны для разработки. Но в итоговом проекте томкэт использует в этом месте свои
+      собственные имплементации этих интерфейсов. Если я оставлю эти библиотеки в сборке, они будут конфликтовать с
+      с томкэтовской имплементацией. Тег <scope>provided</scope> позволяет использовать их при разработке, но
+      не включает в итоговый проект. При запуске интерфейсы из этих библиотек будут имплементированы соответствующими
+      классами собственных библиотек томкэта-->
+      <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+          <version>${javax.servlet-api.version}</version>
+  <!-- Without following line I have "...java.lang.ClassCastException: org.springframework.web.SpringServletContainerInitializer
+  cannot be cast to javax.servlet.ServletContainerInitializer...-->
+          <scope>provided</scope>
+      </dependency>
+      <!--Do not work with following dependency without <scope>provided</scope>-->
+      <dependency>
+          <groupId>javax.servlet.jsp</groupId>
+          <artifactId>javax.servlet.jsp-api</artifactId>
+          <version>${javax.servlet.jsp-api.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>jstl</artifactId>
+          <version>${javax.servlet.jstl.version}</version>
+      </dependency>
+
+  </dependencies>
+
+
+
+    <build>
+        <finalName>spring-mvc-jpa-hibernet-mysql-postgresql-h2-junit</finalName>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <!--<plugin>-->
+          <!--<artifactId>maven-clean-plugin</artifactId>-->
+          <!--<version>3.0.0</version>-->
+        <!--</plugin>-->
+        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
+        <!--<plugin>-->
+          <!--<artifactId>maven-resources-plugin</artifactId>-->
+          <!--<version>3.0.2</version>-->
+        <!--</plugin>-->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven.compiler.plugin.version}</version>
+        </plugin>
+        <!--<plugin>-->
+          <!--<artifactId>maven-surefire-plugin</artifactId>-->
+          <!--<version>2.20.1</version>-->
+        <!--</plugin>-->
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.0</version>
+            <configuration>
+                <failOnMissingWebXml>false</failOnMissingWebXml>
+            </configuration>
+        </plugin>
+        <!--<plugin>-->
+          <!--<artifactId>maven-install-plugin</artifactId>-->
+          <!--<version>2.5.2</version>-->
+        <!--</plugin>-->
+        <!--<plugin>-->
+          <!--<artifactId>maven-deploy-plugin</artifactId>-->
+          <!--<version>2.8.2</version>-->
+        <!--</plugin>-->
+      </plugins>
+    </pluginManagement>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.tomcat.maven</groupId>
+              <artifactId>tomcat7-maven-plugin</artifactId>
+              <version>${tomcat7.maven.plugin.version}</version>
+              <configuration>
+                  <port>8086</port>
+                  <!--<path>/spring-mvc-jpa-hibernet-mysql-postgresql-h2-junit</path>-->
+                  <path>/spring</path>
+              </configuration>
+          </plugin>
+      </plugins>
+  </build>
+</project>

@@ -1,0 +1,7 @@
+http://websystique.com/springmvc/spring-4-mvc-jpa2-hibernate-many-to-many-example/
+
+JdbcTemplate:
+https://alexkosarev.name/2016/06/13/spring-framework-jdbctemplate/
+
+JdbcTestUtils:
+https://www.logicbig.com/tutorials/spring-framework/spring-data-access-with-jdbc/jdbc-test-utils.html
