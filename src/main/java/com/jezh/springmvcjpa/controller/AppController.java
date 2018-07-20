@@ -4,6 +4,7 @@ package com.jezh.springmvcjpa.controller;
 //import com.jezh.springmvcjpa.model.UserProfile;
 //import com.jezh.springmvcjpa.service.UserProfileService;
 //import com.jezh.springmvcjpa.service.UserService;
+import com.jezh.springmvcjpa.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,7 @@ public class AppController {
 
 //
 //	@Autowired
-//	UserService userService;
+//UserService userService;
 //
 //	@Autowired
 //    UserProfileService userProfileService;

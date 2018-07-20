@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 
 @Configuration
-//@Import(JpaConfiguration.class)
+@Import(JpaConfiguration.class)
 @EnableWebMvc
 @ComponentScan(basePackages = "com.jezh.springmvcjpa")
 public class AppConfig implements WebMvcConfigurer {
@@ -29,36 +29,37 @@ public class AppConfig implements WebMvcConfigurer {
 	/**
      * Configure ViewResolvers to deliver preferred views.
      */
-//	@Override
-//	public void configureViewResolvers(ViewResolverRegistry registry) {
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+
+		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//		viewResolver.setViewClass(JstlView.class);
+		viewResolver.setPrefix("/WEB-INF/view/");
+		viewResolver.setSuffix(".jsp");
+		registry.viewResolver(viewResolver);
+	}
+
+//    @Bean
+//    public ViewResolver viewResolver() {
 //
-//		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-////		viewResolver.setViewClass(JstlView.class);
-//		viewResolver.setPrefix("/WEB-INF/views/");
-//		viewResolver.setSuffix(".jsp");
-//		registry.viewResolver(viewResolver);
-//	}
-
-    @Bean
-    public ViewResolver viewResolver() {
-
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-// class JstlView extends InternalResourceView... InternalResourceView: Wrapper for a JSP or other resource within
-// the same web application... The specified MessageSource loads messages from "messages.properties" etc files in the
-// class path. This will automatically be exposed to views as JSTL localization context, which the JSTL fmt tags
-// (message etc) will use.
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/view/");
-        viewResolver.setSuffix(".jsp");
-
-        return viewResolver;
-    }
+//        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+//// class JstlView extends InternalResourceView... InternalResourceView: Wrapper for a JSP or other resource within
+//// the same web application... The specified MessageSource loads messages from "messages.properties" etc files in the
+//// class path. This will automatically be exposed to views as JSTL localization context, which the JSTL fmt tags
+//// (message etc) will use.
+//        viewResolver.setViewClass(JstlView.class);
+//        viewResolver.setPrefix("/WEB-INF/view/");
+//        viewResolver.setSuffix(".jsp");
+//
+//        return viewResolver;
+//    }
 	
 	/**
      * Configure ResourceHandlers to serve static resources like CSS/ Javascript etc...
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+// любую локацию заменяем на паттерн пути
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");
     }
     
