@@ -14,6 +14,7 @@ public class User implements Serializable{
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 
+//	Single Sign-On Id
 	@NotEmpty
 	@Column(name="SSO_ID", unique=true, nullable=false)
 	private String ssoId;
@@ -36,7 +37,9 @@ public class User implements Serializable{
 
 	@NotEmpty
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "APP_USER_USER_PROFILE", 
+	@JoinTable(name = "APP_USER_USER_PROFILE",
+//  User is the owner of assotiation (i.e. the owning side of the association is here). So the relationship
+// is unidirectional (see UserProfile):
              joinColumns = { @JoinColumn(name = "USER_ID") }, 
              inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
 	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
@@ -106,29 +109,34 @@ public class User implements Serializable{
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof User))
-			return false;
-		User other = (User) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (ssoId == null) {
-			if (other.ssoId != null)
-				return false;
-		} else if (!ssoId.equals(other.ssoId))
-			return false;
-		return true;
-	}
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj) return true;
+//		if (obj == null) return false;
+//		if (!(obj instanceof User)) return false;
+//		User other = (User) obj;
+//		if (id == null) {
+//		    if (other.id != null) return false;
+//		} else if (!id.equals(other.id)) return false;
+//
+//		if (ssoId == null) {
+//            return other.ssoId == null;
+//		} else if (!ssoId.equals(other.ssoId)) return false;
+//		return true;
+//	}
 
-	@Override
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User that = (User) o;
+// id and ssoId are @NotEmpty, but I can't simplify the last lines, as there is empty constructor to create new User.
+        if (id != null? !id.equals(that.id) : that.id != null) return false;
+        return ssoId == null ? that.ssoId == null : ssoId.equals(that.ssoId);
+    }
+
+    @Override
 	public String toString() {
 		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
 				+ ", firstName=" + firstName + ", lastName=" + lastName
