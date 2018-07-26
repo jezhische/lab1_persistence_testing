@@ -1,8 +1,10 @@
 package com.jezh.dbConnectionTest;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.annotation.Order;
 
 import java.io.FileReader;
 import java.sql.*;
@@ -15,7 +17,7 @@ public class JavaSqlDbConnectionTest {
     private String password;
     private String select_all_sql_from_user_profile = "select * from user_profile";
 
-    private boolean isMySqlDriver;
+    private boolean isAppropriateDrivers;
 
     @Before
     public void setUp() throws Exception {
@@ -24,6 +26,11 @@ public class JavaSqlDbConnectionTest {
         jdbcUrl = properties.getProperty("jdbc.url");
         user = properties.getProperty("jdbc.username");
         password = properties.getProperty("jdbc.password");
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        isAppropriateDrivers = false;
     }
 
     @Test
@@ -39,9 +46,28 @@ public class JavaSqlDbConnectionTest {
         ServiceLoader<Driver> loader = ServiceLoader.load(Driver.class);
         Iterator<Driver> loaderIterator = loader.iterator();
         loaderIterator.forEachRemaining(driver -> {
-            if (driver.getClass().getName().equals("com.mysql.jdbc.Driver")) isMySqlDriver = true;
+            if (driver.getClass().getName().equals("com.mysql.jdbc.Driver")) isAppropriateDrivers = true;
         });
-        Assert.assertTrue(isMySqlDriver);
+        Assert.assertTrue(isAppropriateDrivers);
+    }
+
+    @Test
+    public void isHsqldbDriverExists() throws Exception {
+        ServiceLoader<Driver> loader = ServiceLoader.load(Driver.class);
+        Iterator<Driver> loaderIterator = loader.iterator();
+        loaderIterator.forEachRemaining(driver -> {
+            if (driver.getClass().getName().equals("org.hsqldb.jdbc.JDBCDriver")) isAppropriateDrivers = true;
+        });
+        Assert.assertTrue(isAppropriateDrivers);
+    }
+
+// test that there is "createDatabaseIfNotExist=true" property in db url
+    @Test
+    public void testCanCreateDbWithUrlProperties() throws Exception {
+        Connection myConn = DriverManager.getConnection(jdbcUrl, user, password);
+        Assert.assertTrue(myConn.isValid(0));
+        myConn.close();
+        Assert.assertTrue(myConn.isClosed());
     }
 
     @Test

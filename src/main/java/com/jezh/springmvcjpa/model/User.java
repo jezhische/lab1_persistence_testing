@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="APP_USER")
-public class User implements Serializable{
+public class    User implements Serializable{
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
@@ -38,8 +38,8 @@ public class User implements Serializable{
 	@NotEmpty
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "APP_USER_USER_PROFILE",
-//  User is the owner of assotiation (i.e. the owning side of the association is here). So the relationship
-// is unidirectional (see UserProfile):
+//  User is the owner of assotiation (i.e. the owning side of the association is here). Because of there is no Set<User>
+// in the UserProfile class, so the relationship is unidirectional (see UserProfile):
              joinColumns = { @JoinColumn(name = "USER_ID") }, 
              inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
 	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();

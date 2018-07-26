@@ -2,7 +2,9 @@ package com.jezh.springmvcjpa.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="USER_PROFILE")
@@ -13,6 +15,10 @@ public class UserProfile implements Serializable{
 
 	@Column(name="TYPE", length=15, unique=true, nullable=false)
 	private String type = UserProfileType.USER.getUserProfileType();
+
+//	for bidirectional relationship:
+//	@ManyToMany(mappedBy = "userProfiles")
+//	private Set<User> users = new HashSet<>();
 	
 	public Integer getId() {
 		return id;

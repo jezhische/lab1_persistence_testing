@@ -57,6 +57,9 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	}
 	
 	//An alternative to Hibernate.initialize()
+//	To avoid "LazyInitializationException – could not initialize proxy – no Session" (this happens if I try to access
+// @ManyToMany Set<UserProfile> outside a session), I need previously fetch collection inside a session
+// with Hibernate.initialize(user.getUserProfiles());
 	protected void initializeCollection(Collection<?> collection) {
 	    if(collection == null) {
 	        return;

@@ -23,11 +23,17 @@ import java.util.Properties;
 @PropertySource(value = { "classpath:application.properties" })
 public class JpaConfiguration {
 
-	@Autowired
-	private Environment environment;
+	private final Environment environment;
 
-	@Bean
+    @Autowired
+    public JpaConfiguration(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Bean
 	public DataSource dataSource() {
+// Simple implementation of the standard JDBC DataSource interface... This class is not an actual connection pool;
+// it does not actually pool Connections.
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
 		dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
@@ -63,6 +69,10 @@ public class JpaConfiguration {
 		// properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
 		properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
 		properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
+// To avoid "java.sql.BatchUpdateException: You have an error in your SQL syntax; check the manual that corresponds
+// to your MySQL server version for the right syntax to use near... " - Make hibernate backquote '`' all table / column names
+		properties.put("hibernate.globally_quoted_identifiers",
+                environment.getRequiredProperty("hibernate.globally_quoted_identifiers"));
 		return properties;
 	}
 
