@@ -1,6 +1,9 @@
 package com.jezh.springmvcjpa.dao;
 
 import com.jezh.springmvcjpa.model.UserProfile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 import sun.reflect.generics.tree.TypeArgument;
 
 import javax.persistence.EntityManager;
@@ -9,6 +12,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
+@Repository
 public abstract class AbstractDao<PK extends Serializable, T> {
 
 //	При применении AbstractDao я напишу, например: public class UserProfileDaoImpl extends AbstractDao<Integer, UserProfile>.
@@ -41,9 +45,12 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 
 //	Здесь я получаю кокретный бин entityManager, существующий у меня в проекте (@PersistenceContext "Expresses a
 // dependency on a container-managed EntityManager and its associated persistence context".):
-	@PersistenceContext
-	EntityManager entityManager;
-	
+//	@PersistenceContext
+//	EntityManager entityManager;
+
+    @Autowired
+    EntityManager entityManager;
+
 	protected EntityManager getEntityManager(){
 		return this.entityManager;
 	}
@@ -55,7 +62,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	protected void persist(T entity) {
 		entityManager.persist(entity);
 	}
-	
+
 	protected void update(T entity) {
 		entityManager.merge(entity);
 	}

@@ -1,11 +1,13 @@
 package com.jezh.springmvcjpa.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -14,8 +16,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import javax.transaction.Transaction;
 import java.util.Properties;
 
 @Configuration
@@ -43,14 +47,35 @@ public class JpaConfiguration {
 	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() /*throws NamingException*/ {
 		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setDataSource(dataSource());
-		factoryBean.setPackagesToScan("com.websystique.springmvc.model");
+		factoryBean.setPackagesToScan("com.jezh.springmvcjpa");
 		factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
 		factoryBean.setJpaProperties(jpaProperties());
 		return factoryBean;
 	}
+
+	// try to create EntityManager bean:
+    @Bean
+    public EntityManager entityManager() /*throws NamingException*/ {
+        EntityManagerFactory emf = entityManagerFactory().getNativeEntityManagerFactory();
+        return emf.createEntityManager();
+    }
+
+//    @Bean
+//    public LocalSessionFactoryBean sessionFactory(){
+//
+//        // create session factory
+//        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+//
+//        // set the properties
+//        sessionFactory.setDataSource(dataSource());
+//        sessionFactory.setPackagesToScan("com.jezh.springmvcjpa");
+//        sessionFactory.setHibernateProperties(jpaProperties());
+//
+//        return sessionFactory;
+//    }
 
 	/*
 	 * Provider specific adapter.
@@ -66,22 +91,34 @@ public class JpaConfiguration {
 	private Properties jpaProperties() {
 		Properties properties = new Properties();
 		properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
-		// properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
+		 properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
 		properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
 		properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
 // To avoid "java.sql.BatchUpdateException: You have an error in your SQL syntax; check the manual that corresponds
 // to your MySQL server version for the right syntax to use near... " - Make hibernate backquote '`' all table / column names
-		properties.put("hibernate.globally_quoted_identifiers",
-                environment.getRequiredProperty("hibernate.globally_quoted_identifiers"));
+//		properties.put("hibernate.globally_quoted_identifiers",
+//                environment.getRequiredProperty("hibernate.globally_quoted_identifiers"));
 		return properties;
 	}
 
-	@Bean
-	@Autowired
-	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-		JpaTransactionManager txManager = new JpaTransactionManager();
-		txManager.setEntityManagerFactory(emf);
-		return txManager;
-	}
+//	@Bean
+//	@Autowired
+//	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+//		JpaTransactionManager txManager = new JpaTransactionManager();
+//		txManager.setEntityManagerFactory(emf);
+//		return txManager;
+//	}
 
+    @Bean
+    public JpaTransactionManager transactionManager() /*throws NamingException*/ {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+
+        return transactionManager;
+    }
+
+    // try to create Transaction bean:
+//    public Transaction transaction() throws NamingException {
+//	    transactionManager(entityManagerFactory().getNativeEntityManagerFactory()).getTransaction()
+//    }
 }

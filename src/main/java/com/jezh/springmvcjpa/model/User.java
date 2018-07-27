@@ -1,5 +1,6 @@
 package com.jezh.springmvcjpa.model;
 
+import jdk.nashorn.internal.objects.annotations.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -7,18 +8,19 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Entity
 @Table(name="APP_USER")
-public class    User implements Serializable{
+public class User implements Serializable{
 
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 
 //	Single Sign-On Id
-	@NotEmpty
-	@Column(name="SSO_ID", unique=true, nullable=false)
-	private String ssoId;
-	
+//	@NotEmpty
+//	@Column(name="SSO_ID", unique=true, nullable=false)
+//	private String ssoId;
+
 	@NotEmpty
 	@Column(name="PASSWORD", nullable=false)
 	private String password;
@@ -35,16 +37,27 @@ public class    User implements Serializable{
 	@Column(name="EMAIL", nullable=false)
 	private String email;
 
-	@NotEmpty
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "APP_USER_USER_PROFILE",
-//  User is the owner of assotiation (i.e. the owning side of the association is here). Because of there is no Set<User>
-// in the UserProfile class, so the relationship is unidirectional (see UserProfile):
-             joinColumns = { @JoinColumn(name = "USER_ID") }, 
-             inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
-	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+//	@NotEmpty
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	@JoinTable(name = "APP_USER_USER_PROFILE",
+////  User is the owner of assotiation (i.e. the owning side of the association is here). Because of there is no Set<User>
+//// in the UserProfile class, so the relationship is unidirectional (see UserProfile):
+//             joinColumns = { @JoinColumn(name = "USER_ID") },
+//             inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
+//	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
 
-	public Integer getId() {
+
+    public User() {
+    }
+
+    public User(String password, String firstName, String lastName, String email) {
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
+    public Integer getId() {
 		return id;
 	}
 
@@ -52,13 +65,13 @@ public class    User implements Serializable{
 		this.id = id;
 	}
 
-	public String getSsoId() {
-		return ssoId;
-	}
-
-	public void setSsoId(String ssoId) {
-		this.ssoId = ssoId;
-	}
+//	public String getSsoId() {
+//		return ssoId;
+//	}
+//
+//	public void setSsoId(String ssoId) {
+//		this.ssoId = ssoId;
+//	}
 
 	public String getPassword() {
 		return password;
@@ -92,20 +105,20 @@ public class    User implements Serializable{
 		this.email = email;
 	}
 
-	public Set<UserProfile> getUserProfiles() {
-		return userProfiles;
-	}
-
-	public void setUserProfiles(Set<UserProfile> userProfiles) {
-		this.userProfiles = userProfiles;
-	}
+//	public Set<UserProfile> getUserProfiles() {
+//		return userProfiles;
+//	}
+//
+//	public void setUserProfiles(Set<UserProfile> userProfiles) {
+//		this.userProfiles = userProfiles;
+//	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((ssoId == null) ? 0 : ssoId.hashCode());
+//		result = prime * result + ((ssoId == null) ? 0 : ssoId.hashCode());
 		return result;
 	}
 
@@ -132,13 +145,14 @@ public class    User implements Serializable{
         if (o == null || getClass() != o.getClass()) return false;
         User that = (User) o;
 // id and ssoId are @NotEmpty, but I can't simplify the last lines, as there is empty constructor to create new User.
-        if (id != null? !id.equals(that.id) : that.id != null) return false;
-        return ssoId == null ? that.ssoId == null : ssoId.equals(that.ssoId);
+//        if (id != null? !id.equals(that.id) : that.id != null) return false;
+//        return ssoId == null ? that.ssoId == null : ssoId.equals(that.ssoId);
+        return id == null ? that.id == null : id.equals(that.id);
     }
 
     @Override
 	public String toString() {
-		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
+		return "User [id=" + id + ", password=" + password  // ", ssoId=" + ssoId +
 				+ ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", email=" + email + "]";
 	}
