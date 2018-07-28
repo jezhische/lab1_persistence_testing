@@ -1,5 +1,7 @@
 package com.jezh.springmvcjpa.configuration;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -24,14 +27,16 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource(value = { "classpath:application.properties" })
+// @ComponentScan see AppConfig
 public class JpaConfiguration {
 
 	private final Environment environment;
+	private final AppProperties appProperties;
 
     @Autowired
-    public JpaConfiguration(Environment environment) {
+    public JpaConfiguration(Environment environment, AppProperties appProperties) {
         this.environment = environment;
+        this.appProperties = appProperties;
     }
 
     @Bean
@@ -52,32 +57,21 @@ public class JpaConfiguration {
 		factoryBean.setDataSource(dataSource());
 		factoryBean.setPackagesToScan("com.jezh.springmvcjpa");
 		factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
-		factoryBean.setJpaProperties(jpaProperties());
+		factoryBean.setJpaProperties(appProperties);
 		return factoryBean;
 	}
 
-	// try to create EntityManager bean:
+// Without following I have Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean
+// of type 'javax.persistence.EntityManager' available: expected at least 1 bean which qualifies as autowire candidate.
+// Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+    // Don't know why LocalContainerEntityManagerFactoryBean does't satisfy above terms.
     @Bean
     public EntityManager entityManager() /*throws NamingException*/ {
         EntityManagerFactory emf = entityManagerFactory().getNativeEntityManagerFactory();
         return emf.createEntityManager();
     }
 
-//    @Bean
-//    public LocalSessionFactoryBean sessionFactory(){
-//
-//        // create session factory
-//        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//
-//        // set the properties
-//        sessionFactory.setDataSource(dataSource());
-//        sessionFactory.setPackagesToScan("com.jezh.springmvcjpa");
-//        sessionFactory.setHibernateProperties(jpaProperties());
-//
-//        return sessionFactory;
-//    }
-
-	/*
+	/**
 	 * Provider specific adapter.
 	 */
 	@Bean
@@ -85,40 +79,13 @@ public class JpaConfiguration {
         return new HibernateJpaVendorAdapter();
 	}
 
-	/*
-	 * Here you can specify any provider specific properties.
-	 */
-	private Properties jpaProperties() {
-		Properties properties = new Properties();
-		properties.put("hibernate.dialect", environment.getRequiredProperty("hibernate.dialect"));
-		 properties.put("hibernate.hbm2ddl.auto", environment.getRequiredProperty("hibernate.hbm2ddl.auto"));
-		properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
-		properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
-// To avoid "java.sql.BatchUpdateException: You have an error in your SQL syntax; check the manual that corresponds
-// to your MySQL server version for the right syntax to use near... " - Make hibernate backquote '`' all table / column names
-//		properties.put("hibernate.globally_quoted_identifiers",
-//                environment.getRequiredProperty("hibernate.globally_quoted_identifiers"));
-		return properties;
-	}
-
+	// see HibernateTransactionManager transactionManager() in SessionFactoryConfig
 //	@Bean
 //	@Autowired
+//    @Qualifier("entityManagerFactory")
 //	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
 //		JpaTransactionManager txManager = new JpaTransactionManager();
 //		txManager.setEntityManagerFactory(emf);
 //		return txManager;
 //	}
-
-    @Bean
-    public JpaTransactionManager transactionManager() /*throws NamingException*/ {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-
-        return transactionManager;
-    }
-
-    // try to create Transaction bean:
-//    public Transaction transaction() throws NamingException {
-//	    transactionManager(entityManagerFactory().getNativeEntityManagerFactory()).getTransaction()
-//    }
 }

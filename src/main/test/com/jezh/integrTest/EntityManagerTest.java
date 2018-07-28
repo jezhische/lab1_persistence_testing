@@ -36,7 +36,7 @@ import javax.transaction.TransactionManager;
 @RunWith(SpringJUnit4ClassRunner.class)
 // "to load the context configuration and bootstrap the context that the test will use":
 @ContextConfiguration(classes = {AppConfig.class})
-@EnableTransactionManagement
+//@EnableTransactionManagement
 // "This annotation ensures that the application context which is loaded for our test is a WebApplicationContext..."
 // Иначе получаем  "No qualifying bean of type 'javax.servlet.ServletContext' available"
 @WebAppConfiguration(value = "com.jezh.springmvcjpa.configuration.AppInitializer")
@@ -54,19 +54,9 @@ public class EntityManagerTest {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         entityManager.persist(user);
+//        entityManager.flush();
         transaction.commit();
     }
-
-//    @Test
-//    public void testUserPersistWithFlush() {
-//        User user = new User("password", "first", "last", "email");
-////        EntityTransaction transaction = entityManager.getTransaction();
-////        transaction.begin();
-//        entityManager.joinTransaction();
-//        entityManager.persist(user);
-//        entityManager.flush();
-////        transaction.commit();
-//    }
 
     @Test
     public void testUserFindById() {

@@ -15,7 +15,9 @@ import org.springframework.web.servlet.view.JstlView;
 
 
 @Configuration
-@Import(JpaConfiguration.class)
+//@Import({JpaConfiguration.class, SessionFactoryConfig.class})
+@Import({JpaConfiguration.class})
+//@Import({SessionFactoryConfig.class})
 @EnableWebMvc
 @ComponentScan(basePackages = "com.jezh.springmvcjpa")
 public class AppConfig implements WebMvcConfigurer {
