@@ -26,6 +26,7 @@ import javax.transaction.Transaction;
 import java.util.Properties;
 
 @Configuration
+// responsible for registering the necessary Spring components that power annotation-driven transaction management
 @EnableTransactionManagement
 // @ComponentScan see AppConfig
 public class JpaConfiguration {

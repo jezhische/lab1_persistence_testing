@@ -28,7 +28,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	    // public interface Type:
 	    // "Type is the common superinterface for all types in the Java programming language. "
         // public interface ParameterizedType extends Type:
-        //ParameterizedType represents a parameterized type such as Collection<String>.
+        //ParameterizedType represents a parameterized type such as Collection<String> (т.е. параметризованный стрингом).
 // NB:todo: например, this = UserProfileDaoImpl extends AbstractDao<Integer, UserProfile>; тогда this.getClass() = UserProfileDaoImpl.class;
 // .getGenericSuperclass() = AbstractDao<Integer, UserProfile>.class;
 // Тпереь у параметризованного AbstractDao<Integer, UserProfile> (созданного из дженерик-класса AbstractDao<PK extends Serializable, T>)
@@ -43,8 +43,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 				.getActualTypeArguments()[1];
     }
 
-//	Здесь я получаю кокретный бин entityManager, существующий у меня в проекте (@PersistenceContext "Expresses a
-// dependency on a container-managed EntityManager and its associated persistence context".):
+//	@PersistenceContext "Expresses a dependency on a container-managed EntityManager and its associated persistence context"
 //	@PersistenceContext
 //	EntityManager entityManager;
 
@@ -55,7 +54,9 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		return this.entityManager;
 	}
 
+	// really this is "getById"
 	protected T getByKey(PK key) {
+// not T.class, but persistentClass, 'cause "cannot select from a type variable" - Type Erasure
 		return (T) entityManager.find(persistentClass, key);
 	}
 
@@ -70,5 +71,4 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 	protected void delete(T entity) {
 		entityManager.remove(entity);
 	}
-
 }

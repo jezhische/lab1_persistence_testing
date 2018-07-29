@@ -17,9 +17,9 @@ public class User implements Serializable{
 	private Integer id;
 
 //	Single Sign-On Id
-//	@NotEmpty
-//	@Column(name="SSO_ID", unique=true, nullable=false)
-//	private String ssoId;
+	@NotEmpty
+	@Column(name="SSO_ID", unique=true, nullable=false)
+	private String ssoId;
 
 	@NotEmpty
 	@Column(name="PASSWORD", nullable=false)
@@ -37,20 +37,22 @@ public class User implements Serializable{
 	@Column(name="EMAIL", nullable=false)
 	private String email;
 
-//	@NotEmpty
-//	@ManyToMany(fetch = FetchType.LAZY)
-//	@JoinTable(name = "APP_USER_USER_PROFILE",
-////  User is the owner of assotiation (i.e. the owning side of the association is here). Because of there is no Set<User>
-//// in the UserProfile class, so the relationship is unidirectional (see UserProfile):
-//             joinColumns = { @JoinColumn(name = "USER_ID") },
-//             inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
-//	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
+	@NotEmpty
+	@ManyToMany(fetch = FetchType.LAZY) // so I need to initialize this Set when I retrieve userProfiles from DB,
+    // if I want to use these Set when the transaction is commited - i.g. call the content of this Set
+	@JoinTable(name = "APP_USER_USER_PROFILE",
+//  User is the owner of assotiation (i.e. the owning side of the association is here). Because of there is no Set<User>
+// in the UserProfile class, so the relationship is unidirectional (see UserProfile):
+             joinColumns = { @JoinColumn(name = "USER_ID") },
+             inverseJoinColumns = { @JoinColumn(name = "USER_PROFILE_ID") })
+	private Set<UserProfile> userProfiles = new HashSet<UserProfile>();
 
 
     public User() {
     }
-
-    public User(String password, String firstName, String lastName, String email) {
+// constructor for testing
+    public User(String ssoId, String password, String firstName, String lastName, String email) {
+        this.ssoId = ssoId;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,13 +67,13 @@ public class User implements Serializable{
 		this.id = id;
 	}
 
-//	public String getSsoId() {
-//		return ssoId;
-//	}
-//
-//	public void setSsoId(String ssoId) {
-//		this.ssoId = ssoId;
-//	}
+	public String getSsoId() {
+		return ssoId;
+	}
+
+	public void setSsoId(String ssoId) {
+		this.ssoId = ssoId;
+	}
 
 	public String getPassword() {
 		return password;
@@ -105,13 +107,13 @@ public class User implements Serializable{
 		this.email = email;
 	}
 
-//	public Set<UserProfile> getUserProfiles() {
-//		return userProfiles;
-//	}
-//
-//	public void setUserProfiles(Set<UserProfile> userProfiles) {
-//		this.userProfiles = userProfiles;
-//	}
+	public Set<UserProfile> getUserProfiles() {
+		return userProfiles;
+	}
+
+	public void setUserProfiles(Set<UserProfile> userProfiles) {
+		this.userProfiles = userProfiles;
+	}
 
 	@Override
 	public int hashCode() {
@@ -145,14 +147,13 @@ public class User implements Serializable{
         if (o == null || getClass() != o.getClass()) return false;
         User that = (User) o;
 // id and ssoId are @NotEmpty, but I can't simplify the last lines, as there is empty constructor to create new User.
-//        if (id != null? !id.equals(that.id) : that.id != null) return false;
-//        return ssoId == null ? that.ssoId == null : ssoId.equals(that.ssoId);
-        return id == null ? that.id == null : id.equals(that.id);
+        if (id != null? !id.equals(that.id) : that.id != null) return false;
+        return ssoId == null ? that.ssoId == null : ssoId.equals(that.ssoId);
     }
 
     @Override
 	public String toString() {
-		return "User [id=" + id + ", password=" + password  // ", ssoId=" + ssoId +
+		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
 				+ ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", email=" + email + "]";
 	}

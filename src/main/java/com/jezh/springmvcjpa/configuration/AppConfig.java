@@ -17,6 +17,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 //@Import({JpaConfiguration.class, SessionFactoryConfig.class})
 @Import({JpaConfiguration.class})
+// uncomment if use SessionFactory rather then EntityManager
 //@Import({SessionFactoryConfig.class})
 @EnableWebMvc
 @ComponentScan(basePackages = "com.jezh.springmvcjpa")

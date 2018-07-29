@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
-@WebAppConfiguration(value = "com.jezh.springmvcjpa.configuration.AppInitializer")
+// uncomment if use SessionFactory rather then EntityManager
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
+//@WebAppConfiguration(value = "com.jezh.springmvcjpa.configuration.AppInitializer")
 public class SessionFactoryTest {
 
-    @Autowired
+    // uncomment if use SessionFactory rather then EntityManager
+    //    @Autowired
     private SessionFactory sessionFactory;
     private Session session;
     private Transaction transaction;
@@ -30,7 +33,7 @@ public class SessionFactoryTest {
     public void setUp() throws Exception {
         session = sessionFactory.openSession();
         transaction = session.beginTransaction();
-        user = new User("password", "firstWithSessionFactory", "lastWithSessionFactory",
+        user = new User("ssoId", "password", "firstWithSessionFactory", "lastWithSessionFactory",
                 "emailWithSessionFactory");
         notEmptyFailedUser = new User();
     }
@@ -47,6 +50,7 @@ public class SessionFactoryTest {
 //        session.persist(user);
     }
 
+    @Ignore
     @Test(expected = /*org.hibernate.PropertyValueException.class, */org.hibernate.AssertionFailure.class)
     public void testNotEmptyFailedUserSave() {
         try {

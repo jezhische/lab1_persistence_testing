@@ -7,6 +7,7 @@ import com.jezh.springmvcjpa.dao.UserDao;
 import com.jezh.springmvcjpa.dao.UserDaoImpl;
 import com.jezh.springmvcjpa.model.User;
 import com.jezh.springmvcjpa.service.UserService;
+import com.jezh.testUtil.TestUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -33,66 +34,30 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.transaction.TransactionManager;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-// "to load the context configuration and bootstrap the context that the test will use":
-@ContextConfiguration(classes = {AppConfig.class})
-//@EnableTransactionManagement
-// "This annotation ensures that the application context which is loaded for our test is a WebApplicationContext..."
-// Иначе получаем  "No qualifying bean of type 'javax.servlet.ServletContext' available"
-@WebAppConfiguration(value = "com.jezh.springmvcjpa.configuration.AppInitializer")
-public class EntityManagerTest {
-
-    @Autowired
-    EntityManager entityManager;
-
-//    @Autowired
-//    JpaTransactionManager transactionManager;
+public class EntityManagerTest extends BaseIntegrationTest {
 
     @Test
     public void testUserPersist() {
-        User user = new User("password", "first", "last", "email");
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
         entityManager.persist(user);
 //        entityManager.flush();
-        transaction.commit();
     }
 
     @Test
     public void testUserFindById() {
+        // retrieve user with id = 1
         User user = entityManager.find(User.class, 1);
         System.out.println(user);
     }
 
-
-    //    @Autowired
-//    UserDao userDao;
-//
-//    @Autowired
-//    UserService userService;
-
-//    @Resource
-//    @Qualifier("sessionFactory")
-//    SessionFactory sessionFactory;
-
-//    @Test
-//    public void testUserPersistWithSessionFactory() {
-//        User user = new User("password", "first", "last", "email");
-//        Session session = sessionFactory.getCurrentSession();
-//        Transaction transaction = session.beginTransaction();
-//        session.save(user);
-//        transaction.commit();
-//    }
-
-//    @Test
-//    public void testUserService() {
-//        User user = new User("password", "first", "last", "email");
-//        userService.saveUser(user);
-//    }
-//
-//    @Test
-//    public void testUserDao() {
-//        User user = new User("password", "first", "last", "email");
-//        userDao.save(user);
-//    }
+//    First javax.persistence.PersistenceException will be thrown, and only second there will be
+// org.hibernate.exception.ConstraintViolationException?? Maybe PersistenceException is only some emersion of
+//    ConstraintViolationException?
+    @Test(expected = javax.persistence.PersistenceException.class)
+    public void testUniqueSsoId() {
+        String randomSsoId = user.getSsoId();
+        User user1 = new User(randomSsoId, "password", "first", "last", "email");;
+        User user2 = new User(randomSsoId, "password", "first", "last", "email");;
+        entityManager.persist(user1);
+        entityManager.persist(user2);
+    }
 }
