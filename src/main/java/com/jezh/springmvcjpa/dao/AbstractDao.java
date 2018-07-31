@@ -4,9 +4,11 @@ import com.jezh.springmvcjpa.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.tree.TypeArgument;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -54,14 +56,22 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 		return this.entityManager;
 	}
 
-	// really this is "getById"
+//    @Transactional
+	// really this will be "getById", 'cause PK is type for id
 	protected T getByKey(PK key) {
 // not T.class, but persistentClass, 'cause "cannot select from a type variable" - Type Erasure
+
 		return (T) entityManager.find(persistentClass, key);
 	}
 
+//	@Transactional
 	protected void persist(T entity) {
+// Since @Transactional do not work by unknown reason for any classes or methods, I need hand made transactions;
+// but the following notation isn't needed as I've moved the transaction creating and handling to TransactionAspect class
+//        EntityTransaction tx = entityManager.getTransaction();
+//        tx.begin();
 		entityManager.persist(entity);
+//		tx.commit();
 	}
 
 	protected void update(T entity) {

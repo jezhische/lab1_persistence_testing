@@ -1,6 +1,7 @@
 package com.jezh.springmvcjpa.dao;
 
 import com.jezh.springmvcjpa.model.User;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -58,7 +59,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		delete(user);
 	}
 
-	//An alternative to Hibernate.initialize()
+	//An alternative to Hibernate.initialize(collection); or Hibernate.initialize(user.getUserProfiles());
 //	To avoid "LazyInitializationException – could not initialize proxy – no Session" (this happens if I try to access
 // @ManyToMany Set<UserProfile> outside a session), I need previously to fetch collection inside a session
 // with Hibernate.initialize(user.getUserProfiles());

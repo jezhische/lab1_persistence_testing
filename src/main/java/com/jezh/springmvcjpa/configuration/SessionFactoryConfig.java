@@ -16,45 +16,45 @@ import javax.sql.DataSource;
 // @ComponentScan see AppConfig
 public class SessionFactoryConfig {
 
-//    private AppProperties appProperties;
-//    private DataSource dataSource;
-//
-//    @Autowired
-//    public SessionFactoryConfig(AppProperties appProperties, DataSource dataSource) {
-//        this.appProperties = appProperties;
-//        this.dataSource = dataSource;
-//    }
-//
+    private AppProperties appProperties;
+    private DataSource dataSource;
+
+    @Autowired
+    public SessionFactoryConfig(AppProperties appProperties, DataSource dataSource) {
+        this.appProperties = appProperties;
+        this.dataSource = dataSource;
+    }
+
+    @Bean
+    public LocalSessionFactoryBean sessionFactory(){
+
+        // create session factory
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+
+        // set the properties
+        sessionFactory.setDataSource(dataSource);
+        sessionFactory.setPackagesToScan("com.jezh.springmvcjpa");
+        sessionFactory.setHibernateProperties(appProperties);
+        return sessionFactory;
+    }
+
 //    @Bean
-//    public LocalSessionFactoryBean sessionFactory(){
-//
-//        // create session factory
-//        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//
-//        // set the properties
-//        sessionFactory.setDataSource(dataSource);
-//        sessionFactory.setPackagesToScan("com.jezh.springmvcjpa");
-//        sessionFactory.setHibernateProperties(appProperties);
-//        return sessionFactory;
+//    public SessionFactory sessionFactory() {
+//        return sessionFactory()
+//                .getConfiguration()
+//                .addProperties(jpaProperties())
+//                .buildSessionFactory(new StandardServiceRegistryBuilder()/*.applySetting(jpaProperties())*/.build());
 //    }
-//
-////    @Bean
-////    public SessionFactory sessionFactory() {
-////        return sessionFactory()
-////                .getConfiguration()
-////                .addProperties(jpaProperties())
-////                .buildSessionFactory(new StandardServiceRegistryBuilder()/*.applySetting(jpaProperties())*/.build());
-////    }
-//
-//
-//    @Bean
-//    @Autowired
-//    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-//
-//        // setup transaction manager based on session factory
-//        HibernateTransactionManager txManager = new HibernateTransactionManager();
-//        txManager.setSessionFactory(sessionFactory);
-//
-//        return txManager;
-//    }
+
+
+    @Bean
+    @Autowired
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+
+        // setup transaction manager based on session factory
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(sessionFactory);
+
+        return txManager;
+    }
 }

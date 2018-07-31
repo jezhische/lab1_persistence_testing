@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,9 +45,12 @@ public class EntityManagerTest extends BaseIntegrationTest {
 
     @Test
     public void testUserFindById() {
-        // retrieve user with id = 1
-        User user = entityManager.find(User.class, 1);
-        System.out.println(user);
+        System.out.println("before persist: " + user + ", hashCode: " + user.hashCode());
+        entityManager.persist(user);
+        System.out.println("after persist: " + user + ", hashCode: " + user.hashCode());
+        User retrievedUser = entityManager.find(User.class, user.getId());
+        Assert.assertEquals(user, retrievedUser);
+        System.out.println("after retrieve: " + retrievedUser + ", hashCode: " + retrievedUser.hashCode());
     }
 
 //    First javax.persistence.PersistenceException will be thrown, and only second there will be

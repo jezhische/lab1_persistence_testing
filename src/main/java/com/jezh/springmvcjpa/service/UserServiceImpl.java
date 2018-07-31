@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityTransaction;
 import java.util.List;
 
 
@@ -16,6 +17,8 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private UserDao dao;
 
+    @Override
+//    @Transactional
 	public User findById(int id) {
 		return dao.findById(id);
 	}
@@ -25,6 +28,8 @@ public class UserServiceImpl implements UserService{
 		return user;
 	}
 
+	@Override
+//    @Transactional
 	public void saveUser(User user) {
 		dao.save(user);
 	}

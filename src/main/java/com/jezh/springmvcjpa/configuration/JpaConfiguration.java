@@ -2,6 +2,7 @@ package com.jezh.springmvcjpa.configuration;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,15 @@ import java.util.Properties;
 // responsible for registering the necessary Spring components that power annotation-driven transaction management
 @EnableTransactionManagement
 // @ComponentScan see AppConfig
+// ...mechanism for adding a PropertySource to Spring's Environment. To be used in conjunction with @Configuration classes.
+// I don't know why, but in this configuration class spring can autowire environment without explicit defining of this
+// annotation. Maybe because of I push collecting of hibernate properties to separate class - see AppProperties class
+@PropertySource(value = {"classpath:application.properties"})
 public class JpaConfiguration {
+
+
+// FIXME: Annotation @Transactional in service classes retrieves appropriate bean of PlatformTransactionManager, BUT THE
+// TRANSACTIONS DO NOT COMMIT by some unknown reason, so I must to create transactions explicitly in AbstractDao class
 
 	private final Environment environment;
 	private final AppProperties appProperties;
@@ -56,9 +65,12 @@ public class JpaConfiguration {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() /*throws NamingException*/ {
 		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setDataSource(dataSource());
-		factoryBean.setPackagesToScan("com.jezh.springmvcjpa");
+    	// "Specify packages to search for autodetection of your entity classes in the classpath":
+		factoryBean.setPackagesToScan("com.jezh.springmvcjpa.model");
 		factoryBean.setJpaVendorAdapter(jpaVendorAdapter());
-		factoryBean.setJpaProperties(appProperties);
+		// another option:
+//        factoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
+        factoryBean.setJpaProperties(appProperties);
 		return factoryBean;
 	}
 
@@ -68,8 +80,8 @@ public class JpaConfiguration {
     // Don't know why LocalContainerEntityManagerFactoryBean does't satisfy above terms.
     @Bean
     public EntityManager entityManager() /*throws NamingException*/ {
-        EntityManagerFactory emf = entityManagerFactory().getNativeEntityManagerFactory();
-        return emf.createEntityManager();
+        EntityManagerFactory emFactory = entityManagerFactory().getNativeEntityManagerFactory();
+        return emFactory.createEntityManager();
     }
 
 	/**
@@ -80,13 +92,29 @@ public class JpaConfiguration {
         return new HibernateJpaVendorAdapter();
 	}
 
-	// see HibernateTransactionManager transactionManager() in SessionFactoryConfig
+	// see also HibernateTransactionManager transactionManager() in SessionFactoryConfig
 //	@Bean
-//	@Autowired
-//    @Qualifier("entityManagerFactory")
-//	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+////	@Autowired
+////    @Qualifier("entityManagerFactory")
+//	public PlatformTransactionManager transactionManager(/*EntityManagerFactory emf*/) {
 //		JpaTransactionManager txManager = new JpaTransactionManager();
-//		txManager.setEntityManagerFactory(emf);
+//		txManager.setEntityManagerFactory(entityManagerFactory().getNativeEntityManagerFactory());
 //		return txManager;
 //	}
+//	it's work also like following:
+//    @Bean
+//    @Autowired
+//    @Qualifier("entityManagerFactory")
+//    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+//        .........
+//        txManager.setEntityManagerFactory(emf);
+//        .......
+//}
+   @Bean
+//   @Autowired
+    public JpaTransactionManager transactionManager(/*EntityManagerFactory emf*/) {
+       JpaTransactionManager txManager = new JpaTransactionManager();
+       txManager.setEntityManagerFactory(entityManagerFactory().getObject());
+       return txManager;
+   }
 }

@@ -38,8 +38,9 @@ public class User implements Serializable{
 	private String email;
 
 	@NotEmpty
-	@ManyToMany(fetch = FetchType.LAZY) // so I need to initialize this Set when I retrieve userProfiles from DB,
-    // if I want to use these Set when the transaction is commited - i.g. call the content of this Set
+// Since the relationship is unidirectional, cascade is not defined: userprofile is not dependent of user, and can live independently
+	@ManyToMany(fetch = FetchType.LAZY) // (default behavior) so I need to initialize this Set when I retrieve userProfiles
+// from DB, if I want to use these Set when the transaction is commited - i.g. call the content of this Set
 	@JoinTable(name = "APP_USER_USER_PROFILE",
 //  User is the owner of assotiation (i.e. the owning side of the association is here). Because of there is no Set<User>
 // in the UserProfile class, so the relationship is unidirectional (see UserProfile):
@@ -120,7 +121,7 @@ public class User implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-//		result = prime * result + ((ssoId == null) ? 0 : ssoId.hashCode());
+		result = prime * result + ((ssoId == null) ? 0 : ssoId.hashCode());
 		return result;
 	}
 
@@ -155,7 +156,7 @@ public class User implements Serializable{
 	public String toString() {
 		return "User [id=" + id + ", ssoId=" + ssoId + ", password=" + password
 				+ ", firstName=" + firstName + ", lastName=" + lastName
-				+ ", email=" + email + "]";
+				+ ", email=" + email + ", userProfiles=" + userProfiles + "]";
 	}
 
 
