@@ -1,5 +1,6 @@
 package com.jezh.springmvcjpa.configuration;
 
+import com.jezh.springmvcjpa.converter.RoleToUserProfileConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -24,9 +25,8 @@ import org.springframework.web.servlet.view.JstlView;
 public class AppConfig implements WebMvcConfigurer {
 
 
-    // todo: to fix-------------------------------------------------------------
-//	@Autowired
-//	RoleToUserProfileConverter roleToUserProfileConverter;
+	@Autowired
+    RoleToUserProfileConverter roleToUserProfileConverter;
 	
 
 	/**
@@ -70,11 +70,10 @@ public class AppConfig implements WebMvcConfigurer {
      * Configure Converter to be used.
      * In our example, we need a converter to convert string values[Roles] to UserProfiles in newUser.jsp
      */
-    // todo: to fix-------------------------------------------------------------
-//    @Override
-//    public void addFormatters(FormatterRegistry registry) {
-//        registry.addConverter(roleToUserProfileConverter);
-//    }
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(roleToUserProfileConverter);
+    }
 	
 
     /**

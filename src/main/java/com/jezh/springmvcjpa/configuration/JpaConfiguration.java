@@ -51,8 +51,8 @@ public class JpaConfiguration {
 
     @Bean
 	public DataSource dataSource() {
-// Simple implementation of the standard JDBC DataSource interface... This class is not an actual connection pool;
-// it does not actually pool Connections.
+// DriverManagerDataSource - Simple implementation of the standard JDBC DataSource interface... This class is not
+// an actual connection pool; it does not actually pool Connections.
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
 		dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));

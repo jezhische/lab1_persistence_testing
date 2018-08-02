@@ -54,7 +54,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 	public void deleteBySSO(String sso) {
 		User user = (User) getEntityManager()
 				.createQuery("SELECT u FROM User u WHERE u.ssoId LIKE :ssoId")
-//				.setParameter("ssoId", sso)
+				.setParameter("ssoId", sso)
 				.getSingleResult();
 		delete(user);
 	}
